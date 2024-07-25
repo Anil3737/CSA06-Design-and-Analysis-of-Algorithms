@@ -1,0 +1,112 @@
+#include <stdio.h>
+
+void strassen(int n, int A[n][n], int B[n][n], int C[n][n]);
+
+// Function to add two matrices
+void matrix_add(int n, int A[n][n], int B[n][n], int C[n][n]) {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            C[i][j] = A[i][j] + B[i][j];
+        }
+    }
+}
+
+// Function to subtract two matrices
+void matrix_subtract(int n, int A[n][n], int B[n][n], int C[n][n]) {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            C[i][j] = A[i][j] - B[i][j];
+        }
+    }
+}
+
+// Function to perform Strassen's matrix multiplication
+void strassen(int n, int A[n][n], int B[n][n], int C[n][n]) {
+    if (n == 1) {
+        C[0][0] = A[0][0] * B[0][0];
+        return;
+    }
+
+    int newSize = n / 2;
+    int A11[newSize][newSize], A12[newSize][newSize], A21[newSize][newSize], A22[newSize][newSize];
+    int B11[newSize][newSize], B12[newSize][newSize], B21[newSize][newSize], B22[newSize][newSize];
+    int C11[newSize][newSize], C12[newSize][newSize], C21[newSize][newSize], C22[newSize][newSize];
+    int M1[newSize][newSize], M2[newSize][newSize], M3[newSize][newSize], M4[newSize][newSize];
+    int M5[newSize][newSize], M6[newSize][newSize], M7[newSize][newSize];
+    int temp1[newSize][newSize], temp2[newSize][newSize];
+
+    // Divide A and B into submatrices
+    for (int i = 0; i < newSize; i++) {
+        for (int j = 0; j < newSize; j++) {
+            A11[i][j] = A[i][j];
+            A12[i][j] = A[i][j + newSize];
+            A21[i][j] = A[i + newSize][j];
+            A22[i][j] = A[i + newSize][j + newSize];
+
+            B11[i][j] = B[i][j];
+            B12[i][j] = B[i][j + newSize];
+            B21[i][j] = B[i + newSize][j];
+            B22[i][j] = B[i + newSize][j + newSize];
+        }
+    }
+
+    // Compute seven products
+    strassen(newSize, A11, matrix_subtract(newSize, B12, B22, temp1), M1);
+    strassen(newSize, matrix_add(newSize, A11, A12, temp1), B22, M2);
+    strassen(newSize, matrix_add(newSize, A21, A22, temp1), B11, M3);
+    strassen(newSize, A22, matrix_subtract(newSize, B21, B11, temp1), M4);
+    strassen(newSize, matrix_add(newSize, A11, A22, temp1), matrix_add(newSize, B11, B22, temp2), M5);
+    strassen(newSize, matrix_subtract(newSize, A12, A22, temp1), matrix_add(newSize, B21, B22, temp2), M6);
+    strassen(newSize, matrix_subtract(newSize, A11, A21, temp1), matrix_add(newSize, B11, B12, temp2), M7);
+
+    // Compute C submatrices
+    matrix_add(newSize, matrix_subtract(newSize, matrix_add(newSize, M5, M4, temp1), M2, temp2), M6, C11);
+    matrix_add(newSize, M1, M2, C12);
+    matrix_add(newSize, M3, M4, C21);
+    matrix_add(newSize, matrix_subtract(newSize, matrix_subtract(newSize, M5, M1, temp1), M3, temp2), M7, C22);
+
+    // Combine C submatrices into C
+    for (int i = 0; i < newSize; i++) {
+        for (int j = 0; j < newSize; j++) {
+            C[i][j] = C11[i][j];
+            C[i][j + newSize] = C12[i][j];
+            C[i + newSize][j] = C21[i][j];
+            C[i + newSize][j + newSize] = C22[i][j];
+        }
+    }
+}
+
+int main() {
+    int n;
+
+    printf("Enter the size of the square matrices: ");
+    scanf("%d", &n);
+
+    int A[n][n], B[n][n], C[n][n];
+
+    printf("Enter elements of the first matrix A:\n");
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            scanf("%d", &A[i][j]);
+        }
+    }
+
+    printf("Enter elements of the second matrix B:\n");
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            scanf("%d", &B[i][j]);
+        }
+    }
+
+    strassen(n, A, B, C);
+
+    printf("Resultant matrix C (Strassen's matrix multiplication):\n");
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            printf("%d ", C[i][j]);
+        }
+        printf("\n");
+    }
+
+    return 0;
+}

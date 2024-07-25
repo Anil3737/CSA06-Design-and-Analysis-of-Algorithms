@@ -1,0 +1,56 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Structure to represent items
+struct Item {
+    int value;
+    int weight;
+};
+
+// Function to compare items based on their value-to-weight ratio (greedy strategy)
+int compare(const void *a, const void *b) {
+    double ratioA = (double)(((struct Item *)a)->value) / ((struct Item *)a)->weight;
+    double ratioB = (double)(((struct Item *)b)->value) / ((struct Item *)b)->weight;
+    return (ratioB > ratioA) - (ratioB < ratioA);
+}
+
+// Function to solve the 0/1 Knapsack problem using a greedy approach
+void greedyKnapsack(int capacity, struct Item items[], int n) {
+    qsort(items, n, sizeof(struct Item), compare);
+
+    double totalValue = 0.0;
+    int currentWeight = 0;
+
+    printf("Selected items:\n");
+
+    for (int i = 0; i < n; i++) {
+        if (currentWeight + items[i].weight <= capacity) {
+            currentWeight += items[i].weight;
+            totalValue += items[i].value;
+            printf("Item with value %d and weight %d\n", items[i].value, items[i].weight);
+        }
+    }
+
+    printf("Total value in the knapsack: %.2lf\n", totalValue);
+}
+
+int main() {
+    int n, capacity;
+
+    printf("Enter the number of items: ");
+    scanf("%d", &n);
+
+    printf("Enter the knapsack capacity: ");
+    scanf("%d", &capacity);
+
+    struct Item items[n];
+
+    printf("Enter the value and weight of each item:\n");
+    for (int i = 0; i < n; i++) {
+        scanf("%d %d", &items[i].value, &items[i].weight);
+    }
+
+    greedyKnapsack(capacity, items, n);
+
+    return 0;
+}

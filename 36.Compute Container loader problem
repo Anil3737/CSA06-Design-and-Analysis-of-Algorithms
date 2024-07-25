@@ -1,0 +1,81 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+#define MAX_CONTAINERS 100
+#define MAX_ITEMS 100
+
+struct Item {
+    int id;
+    int width;
+    int height;
+    int depth;
+    bool packed;
+};
+
+struct Container {
+    int id;
+    int remainingWidth;
+    int remainingHeight;
+    int remainingDepth;
+};
+
+int numContainers = 0;
+struct Container containers[MAX_CONTAINERS];
+int numItems = 0;
+struct Item items[MAX_ITEMS];
+
+// Function to initialize containers
+void initializeContainers() {
+    for (int i = 0; i < numContainers; i++) {
+        containers[i].id = i;
+        containers[i].remainingWidth = 100; // Adjust as needed
+        containers[i].remainingHeight = 100; // Adjust as needed
+        containers[i].remainingDepth = 100; // Adjust as needed
+    }
+}
+
+// Function to initialize items
+void initializeItems() {
+    for (int i = 0; i < numItems; i++) {
+        items[i].id = i;
+        items[i].packed = false;
+        // Assign dimensions for each item
+        // items[i].width = ...
+        // items[i].height = ...
+        // items[i].depth = ...
+    }
+}
+
+// Function to perform container loading using FFD
+void packItems() {
+    for (int i = 0; i < numItems; i++) {
+        for (int j = 0; j < numContainers; j++) {
+            if (!items[i].packed &&
+                items[i].width <= containers[j].remainingWidth &&
+                items[i].height <= containers[j].remainingHeight &&
+                items[i].depth <= containers[j].remainingDepth) {
+                // Pack the item into the container
+                items[i].packed = true;
+                containers[j].remainingWidth -= items[i].width;
+                containers[j].remainingHeight -= items[i].height;
+                containers[j].remainingDepth -= items[i].depth;
+                printf("Item %d packed into Container %d\n", items[i].id, containers[j].id);
+            }
+        }
+    }
+}
+
+int main() {
+    // Initialize the number of containers and items
+    numContainers = 3;
+    numItems = 5;
+
+    // Initialize containers and items
+    initializeContainers();
+    initializeItems();
+
+    // Pack items into containers using FFD
+    packItems();
+
+    return 0;
+}

@@ -1,0 +1,47 @@
+#include <stdio.h>
+
+int main() {
+    int n, insertValue, position;
+
+    printf("Enter the number of elements in the list: ");
+    scanf("%d", &n);
+
+    if (n <= 0) {
+        printf("Invalid input. Please enter a positive number of elements.\n");
+        return 1;
+    }
+
+    int list[n + 1];  // Create an array to store the list
+
+    printf("Enter the list of numbers:\n");
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &list[i]);
+    }
+
+    printf("Enter the value to insert: ");
+    scanf("%d", &insertValue);
+
+    printf("Enter the position (1-based) to insert the value: ");
+    scanf("%d", &position);
+
+    if (position < 1 || position > n + 1) {
+        printf("Invalid position. Please enter a valid position between 1 and %d.\n", n + 1);
+        return 1;
+    }
+
+    // Shift elements to make room for the new number
+    for (int i = n; i >= position; i--) {
+        list[i] = list[i - 1];
+    }
+
+    // Insert the number at the specified position
+    list[position - 1] = insertValue;
+
+    printf("Updated list after insertion:\n");
+    for (int i = 0; i < n + 1; i++) {
+        printf("%d ", list[i]);
+    }
+    printf("\n");
+
+    return 0;
+}

@@ -1,0 +1,55 @@
+#include <stdio.h>
+
+#define V 4 // Number of vertices
+#define M 3 // Number of colors
+
+int graph[V][V] = {
+    {0, 1, 1, 1},
+    {1, 0, 1, 0},
+    {1, 1, 0, 1},
+    {1, 0, 1, 0}
+};
+int colors[V];
+
+// Function to check if it's safe to assign a color to a vertex
+int isSafe(int vertex, int c) {
+    for (int i = 0; i < V; i++) {
+        if (graph[vertex][i] && c == colors[i]) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+// Function to solve the graph coloring problem using backtracking
+int graphColoring(int vertex) {
+    if (vertex == V) {
+        return 1; // All vertices are colored
+    }
+
+    for (int c = 1; c <= M; c++) {
+        if (isSafe(vertex, c)) {
+            colors[vertex] = c;
+
+            if (graphColoring(vertex + 1)) {
+                return 1; // Successfully colored all vertices
+            }
+
+            colors[vertex] = 0; // Backtrack
+        }
+    }
+    return 0; // No solution found
+}
+
+int main() {
+    if (graphColoring(0)) {
+        printf("Solution exists. The coloring of vertices is:\n");
+        for (int i = 0; i < V; i++) {
+            printf("Vertex %d: Color %d\n", i, colors[i]);
+        }
+    } else {
+        printf("No solution exists for the given graph and number of colors.\n");
+    }
+
+    return 0;
+}

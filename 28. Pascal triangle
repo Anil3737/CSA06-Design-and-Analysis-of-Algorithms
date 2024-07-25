@@ -1,0 +1,35 @@
+#include <stdio.h>
+
+// Function to calculate and print Pascal's Triangle
+void printPascalsTriangle(int n) {
+    int i, j, coef;
+
+    for (i = 0; i < n; i++) {
+        for (j = 0; j <= n - i; j++) {
+            printf("  "); // Print spaces for formatting
+        }
+
+        for (j = 0; j <= i; j++) {
+            if (j == 0 || i == 0) {
+                coef = 1;
+            } else {
+                coef = coef * (i - j + 1) / j;
+            }
+            printf("%4d", coef); // Adjust the width as needed
+        }
+
+        printf("\n");
+    }
+}
+
+int main() {
+    int rows;
+
+    printf("Enter the number of rows for Pascal's Triangle: ");
+    scanf("%d", &rows);
+
+    printf("Pascal's Triangle with %d rows:\n", rows);
+    printPascalsTriangle(rows);
+
+    return 0;
+}

@@ -1,0 +1,60 @@
+#include <stdio.h>
+
+#define MAX 100
+
+int n;             // Number of elements in the set
+int set[MAX];      // The set of elements
+int subset[MAX];   // Temporary array to store the current subset
+int total = 0;     // The target sum
+
+// Function to print the subset with the target sum
+void printSubset(int k) {
+    printf("Subset with sum %d: {", total);
+    for (int i = 0; i < k; i++) {
+        printf("%d", subset[i]);
+        if (i < k - 1) {
+            printf(", ");
+        }
+    }
+    printf("}\n");
+}
+
+// Backtracking function to find subsets with the target sum
+void findSubsets(int k, int sum, int index) {
+    if (sum == total) {
+        printSubset(k);
+        return;
+    }
+    if (index >= n || sum > total) {
+        return;
+    }
+
+    // Include the current element in the subset
+    subset[k] = set[index];
+    findSubsets(k + 1, sum + set[index], index + 1);
+
+    // Exclude the current element from the subset
+    findSubsets(k, sum, index + 1);
+}
+
+int main() {
+    printf("Enter the number of elements in the set: ");
+    scanf("%d", &n);
+
+    if (n <= 0 || n > MAX) {
+        printf("Invalid input. Please enter a positive number of elements (up to %d).\n", MAX);
+        return 1;
+    }
+
+    printf("Enter the elements of the set:\n");
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &set[i]);
+    }
+
+    printf("Enter the target sum: ");
+    scanf("%d", &total);
+
+    findSubsets(0, 0, 0);
+
+    return 0;
+}
